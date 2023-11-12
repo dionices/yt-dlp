@@ -10,6 +10,8 @@ from ..utils import (
     urlencode_postdata,
 )
 
+import html
+
 
 class ManyVidsIE(InfoExtractor):
     _VALID_URL = r'(?i)https?://(?:www\.)?manyvids\.com/video/(?P<id>\d+)'
@@ -67,14 +69,17 @@ class ManyVidsIE(InfoExtractor):
         title = self._search_regex(
             r'''<h1\sclass="VideoMetaInfo_title__mWRak">(.*)</h1>''',
             webpage, 'video title', default='')
+        title = html.unescape(title)
 
         description = self._search_regex(
             r'''<p\sclass="VideoDetail_partial__T9jkc"\sdata-testid="description">([\s\S.]*)</p>''',
             webpage, 'video description', default='')
+        description = html.unescape(description)
 
         model = self._search_regex(
             r'''<a aria-label="model-profile" .*>(.*)</a>''',
             webpage, 'model name', default='')
+        model = html.unescape(model)
 
         video_info_url = f'https://video-player-bff.estore.kiwi.manyvids.com/vercel/videos/{video_id}/private'
         video_info = self._download_json(
